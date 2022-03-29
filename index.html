@@ -8,24 +8,34 @@
   </head>
   <body>
     <script>
+      var div = document.createElement("div");
+      document.body.appendChild(div);
+
+      div.appendChild(document.createTextNode('Initializing...'));
+
+      var envId = '_CLIENT_KEY_HERE_';
       var user = {
         "key": "example-user-key",
         "name": "Sandy"
       };
+      var ldclient = LDClient.initialize(envId, user);
 
-      var div = document.createElement("div");
-      document.body.appendChild(div);
-      
-      div.appendChild(document.createTextNode('Initializing...'));
+      var flagName = '_FLAG_NAME_HERE_';
+      var defaultFlagValue = {
+        text: 'OPPS! Did\'t Connect! What else is new?',
+        url: 'https://news.google.com'
+      };
 
-      var ldclient = LDClient.initialize('YOUR_CLIENT_SIDE_ID_HERE', user);
-      
       function render() {
-        var shouldShow = ldclient.variation("YOUR_FLAG_KEY_HERE", false);
-        var label = (shouldShow ? "Showing" : "Not showing") + " your feature to " + user.key;
-        div.replaceChild(document.createTextNode(label), div.firstChild);
+        var flagValue = ldclient.variation(flagName, defaultFlagValue);
+        var a = document.createElement('a'); 
+        var link = document.createTextNode(flagValue.text);
+        a.appendChild(link); 
+        a.title = flagValue.text;
+        a.href = flagValue.url; 
+        div.replaceChild(a, div.firstChild);
       }
-      
+
       ldclient.on('ready', render);
       ldclient.on('change', render);
     </script>
